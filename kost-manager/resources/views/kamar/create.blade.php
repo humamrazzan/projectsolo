@@ -1,51 +1,55 @@
 <x-app-layout>
-    <div>
-        <h3 class="text-3xl font-bold text-white">Tambah Kamar Baru</h3>
-        <div class="text-sm text-gray-400">Home / Kamar / Tambah</div>
-    </div>
+    <div class="space-y-6">
+        <!-- Header -->
+        <div>
+            <h3 class="text-3xl font-bold text-gray-800 dark:text-white">Tambah Kamar Baru</h3>
+            <div class="text-sm text-gray-500 dark:text-gray-400">Home / Kamar / Tambah</div>
+        </div>
 
-    <div class="mt-6 bg-gray-800/50 p-6 rounded-lg border border-gray-700">
-        <form action="#" method="POST">
-            @csrf
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Nomor Kamar -->
-                <div>
-                    <label for="nomor_kamar" class="block text-sm font-medium text-gray-300">Nomor Kamar</label>
-                    <input type="text" name="nomor_kamar" id="nomor_kamar" class="mt-1 block w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm" placeholder="Contoh: 101, 20A" required>
-                </div>
-
-                <!-- Harga per Bulan -->
-                <div>
-                    <label for="harga_per_bulan" class="block text-sm font-medium text-gray-300">Harga per Bulan (Rp)</label>
-                    <input type="number" name="harga_per_bulan" id="harga_per_bulan" class="mt-1 block w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm" placeholder="Contoh: 1500000" required>
-                </div>
-
-                <!-- Fasilitas -->
-                <div class="md:col-span-2">
-                    <label for="fasilitas" class="block text-sm font-medium text-gray-300">Fasilitas</label>
-                    <textarea name="fasilitas" id="fasilitas" rows="3" class="mt-1 block w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm" placeholder="Contoh: AC, Wi-Fi, Kamar Mandi Dalam"></textarea>
-                </div>
-
-                <!-- Status -->
-                <div>
-                    <label for="status" class="block text-sm font-medium text-gray-300">Status</label>
-                    <select name="status" id="status" class="mt-1 block w-full bg-gray-700 border-gray-600 text-white rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm" required>
-                        <option value="Tersedia">Tersedia</option>
-                        <option value="Terisi">Terisi</option>
-                        <option value="Dalam Perbaikan">Dalam Perbaikan</option>
-                    </select>
-                </div>
+        @if ($errors->any())
+            <div class="bg-red-500 text-white p-4 rounded-lg">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
+        @endif
 
-            <!-- Tombol Aksi -->
-            <div class="mt-8 flex justify-end space-x-4">
-                <a href="{{ route('kamar.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-700 focus:outline-none focus:border-gray-700 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                    Batal
-                </a>
-                <button type="submit" class="inline-flex items-center px-4 py-2 bg-teal-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-teal-600 active:bg-teal-700 focus:outline-none focus:border-teal-700 focus:ring ring-teal-300 disabled:opacity-25 transition ease-in-out duration-150">
-                    Simpan
-                </button>
-            </div>
-        </form>
+        <div class="bg-white dark:bg-gray-800/50 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+            <form action="{{ route('kamar.store') }}" method="POST">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <x-input-label for="nomor_kamar" :value="__('Nomor Kamar')" />
+                        <x-text-input id="nomor_kamar" name="nomor_kamar" type="text" class="mt-1 block w-full" :value="old('nomor_kamar')" required />
+                    </div>
+                    <div>
+                        <x-input-label for="harga" :value="__('Harga per Bulan')" />
+                        <x-text-input id="harga" name="harga" type="number" class="mt-1 block w-full" :value="old('harga')" required />
+                    </div>
+                    <div>
+                        <x-input-label for="status" :value="__('Status')" />
+                        <select id="status" name="status" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                            <option value="kosong" {{ old('status') == 'kosong' ? 'selected' : '' }}>Kosong</option>
+                            <option value="terisi" {{ old('status') == 'terisi' ? 'selected' : '' }}>Terisi</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <x-input-label for="keterangan" :value="__('Keterangan')" />
+                        <textarea id="keterangan" name="keterangan" rows="4" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ old('keterangan') }}</textarea>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end mt-6">
+                    <a href="{{ route('kamar.index') }}" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mr-4">
+                        Batal
+                    </a>
+                    <x-primary-button>
+                        {{ __('Simpan') }}
+                    </x-primary-button>
+                </div>
+            </form>
+        </div>
     </div>
 </x-app-layout>
